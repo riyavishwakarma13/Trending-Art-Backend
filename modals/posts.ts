@@ -1,9 +1,29 @@
 import { Schema, models, model } from "mongoose";
 import * as yup from "yup";
 
-const cities = ["MUMBAI", "PUNE", "NAGPUR"];
+const cities = [
+  "THANE",
+  "NAVI MUMBAI",
+  "PUNE",
+  "AMRAVATI",
+  "NAGPUR",
+  "AKOLA",
+  "JALGAON",
+  "KOLHAPUR",
+  "CHANDRAPUR",
+  "WASHIM",
+  "SANGLI",
+  "HINGOLI",
+  "GHADCHIROLI",
+  "AMRAVATI",
+  "LATUR",
+  "PALGHAR",
+  "AURANGABAD",
+  "GOA",
+  "NANDED",
+];
 
-const categories = ["HOME", "SOCIETY", "MANDAL"];
+const categories = ["HOUSEHOLD", "SOCIETY", "MANDAL"];
 
 export const postsValidationSchema = yup.object({
   name: yup.string().required(),

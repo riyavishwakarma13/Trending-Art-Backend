@@ -29,16 +29,17 @@ const sendOtp: Handler = async (req, res) => {
   try {
     await numberValidationSchema.validate(number);
     if (!doc) {
-      users.create({
+      await users.create({
         phone: number,
       });
+    } else {
+      await doc.update({ verified: false });
     }
 
     await axios.get(
       `https://2factor.in/API/V1/${apiKey}/SMS/+91${number}/AUTOGEN/OTP1`,
       {}
     );
-    await doc.update({ verified: false });
     return res.json({ message: "OTP sent to the phone number" });
   } catch (error) {
     console.error(error);

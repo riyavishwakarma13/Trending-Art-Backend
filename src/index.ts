@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import postRouter from "../routes/posts";
+import votesRouter from "../routes/votes";
 import { verifyOtp } from "../controllers/verify-otp";
 import { sendOtp } from "../controllers/send-otp";
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use("/api/posts", postRouter);
 app.post("/api/verify-otp", verifyOtp);
 app.post("/api/send-otp", sendOtp);
+app.use("/api/votes", votesRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("WooW MeoW");

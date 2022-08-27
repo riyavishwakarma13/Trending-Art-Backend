@@ -4,7 +4,6 @@ import { numberValidationSchema } from "../modals/posts";
 import users from "../modals/users";
 import axios from "axios";
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const sendOtp: Handler = async (req, res) => {
@@ -35,22 +34,16 @@ const sendOtp: Handler = async (req, res) => {
       });
     }
 
-    try {
-      await axios.get(
-        `https://2factor.in/API/V1/${apiKey}/SMS/+91${number}/AUTOGEN/OTP1`,
-        {}
-      );
-      return res.json({ message: "OTP sent to the phone number" });
-    } catch (error) {
-      return res.status(500).json({ message: "Couldn't sent otp" });
-    }
+    await axios.get(
+      `https://2factor.in/API/V1/${apiKey}/SMS/+91${number}/AUTOGEN/OTP1`,
+      {}
+    );
+    return res.json({ message: "OTP sent to the phone number" });
   } catch (error) {
     console.error(error);
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
-    } else {
-      return res.status(500).json({ message: "Something went wrong" });
-    }
+    } else return res.status(500).json({ message: "Something went wrong" });
   }
 };
 

@@ -43,46 +43,23 @@ const addPost: Handler = async (req, res) => {
 
   try {
     await postsValidationSchema.validate(body, { abortEarly: false });
-  } catch (error) {
+
+    const url = await uploadFileToFTP(file, body.phone);
+
+    await posts.create({
+      ...body,
+      imageLink: url,
+    });
+    return res.json({ message: `${url}` });
+  } catch (error: any) {
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
+    } else if (error?.message.includes("duplicate")) {
+      return res.status(401).json({ message: "Post Already Exists" });
     } else {
       return res.status(500).json({ message: "Something went wrong" });
     }
   }
-
-  const url = await uploadFileToFTP(file, body.phone);
-
-  await posts.create({
-    ...body,
-    imageLink: url,
-  });
-
-  const apiKey = process.env.OTP_API_KEY;
-
-  //   try {
-
-  //   }catch (err) {
-
-  //   }
-
-  //   const urlencoded = new URLSearchParams();
-  //   urlencoded.append("module", "PROMO_SMS");
-  //   urlencoded.append("apikey", `7e825d24-${apiKey}-0200cd93604211`);
-  //   urlencoded.append("to", `91${body.number}`);
-  //   urlencoded.append("from", "HEADER");
-  //   urlencoded.append("msg", `${url}`);
-
-  //   var requestOptions = {
-  //     method: "POST",
-  //     body: urlencoded,
-  //   };
-
-  //   fetch("https://2factor.in/API/R1/", requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) => console.log(result))
-  //     .catch((error) => console.log("error", error));
-  return res.json({ message: `${url}` });
 };
 
 const getPosts: Handler = async (req, res) => {

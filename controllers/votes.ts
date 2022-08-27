@@ -7,7 +7,6 @@ import votes, { votesValidationSchema } from "../modals/votes";
 dotenv.config();
 const addVote: Handler = async (req, res) => {
   const body = req.body;
-  console.log(body);
   try {
     await votesValidationSchema.validate(body, { abortEarly: false });
     const post = await posts.findById(body.postId);
@@ -25,10 +24,12 @@ const addVote: Handler = async (req, res) => {
       },
     });
     return res.json({ message: "Vote Added Successfully" });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
+    } else if (error?.message.includes("duplicate")) {
+      return res.status(401).json({ message: "Already Voted" });
     } else {
       return res.status(500).json({ message: "Something went wrong" });
     }

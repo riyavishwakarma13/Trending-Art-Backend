@@ -43,6 +43,7 @@ const PostSchema = new Schema(
     },
     phone: {
       type: String,
+      unique: true,
       required: true,
     },
     city: {

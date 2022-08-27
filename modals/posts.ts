@@ -4,6 +4,7 @@ import * as yup from "yup";
 const cities = [
   "THANE",
   "NAVI MUMBAI",
+  "MUMBAI",
   "PUNE",
   "AMRAVATI",
   "NAGPUR",

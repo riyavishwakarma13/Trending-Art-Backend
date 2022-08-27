@@ -33,7 +33,7 @@ const sendOtp: Handler = async (req, res) => {
         phone: number,
       });
     } else {
-      await doc.update({ verified: false });
+      await doc.updateOne({ verified: false });
     }
 
     await axios.get(

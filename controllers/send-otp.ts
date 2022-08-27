@@ -19,7 +19,7 @@ const sendOtp: Handler = async (req, res) => {
     if (doc.verified)
       return res.status(201).json({ message: `Already Verified` });
     else if (
-      (new Date().getTime() - new Date(doc.createdAt).getTime()) / 1000 <
+      (new Date().getTime() - new Date(doc.updatedAt).getTime()) / 1000 <
       60
     ) {
       return res.status(401).json({ message: `Retry after Sometime` });
@@ -38,6 +38,7 @@ const sendOtp: Handler = async (req, res) => {
       `https://2factor.in/API/V1/${apiKey}/SMS/+91${number}/AUTOGEN/OTP1`,
       {}
     );
+    await doc.update({ verified: false });
     return res.json({ message: "OTP sent to the phone number" });
   } catch (error) {
     console.error(error);

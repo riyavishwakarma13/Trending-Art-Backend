@@ -13,6 +13,11 @@ const addVote: Handler = async (req, res) => {
     if (!post) {
       return res.status(400).json({ message: "post not found" });
     }
+
+    if (post.number === body.phone) {
+      return res.status(400).json({ message: "Cannot vote to yourself" });
+    }
+
     await votes.create({
       postId: body.postId,
       email: body.email,

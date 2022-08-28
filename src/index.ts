@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -24,7 +24,7 @@ app.post("/api/verify-otp", verifyOtp);
 app.post("/api/send-otp", sendOtp);
 app.use("/api/votes", votesRouter);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (req, res) => {
   res.send("WooW MeoW");
 });
 

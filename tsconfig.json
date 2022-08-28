@@ -13,6 +13,6 @@
     "strictNullChecks": true,
     "skipLibCheck": true
   },
-  "include": ["api/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

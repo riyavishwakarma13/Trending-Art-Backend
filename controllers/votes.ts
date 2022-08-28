@@ -14,7 +14,7 @@ const addVote: Handler = async (req, res) => {
       return res.status(400).json({ message: "post not found" });
     }
 
-    if (post.number === body.phone) {
+    if (post.phone === body.phone) {
       return res.status(400).json({ message: "Cannot vote to yourself" });
     }
 

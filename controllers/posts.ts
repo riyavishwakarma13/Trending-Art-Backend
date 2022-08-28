@@ -94,7 +94,7 @@ const getPosts: Handler = async (req, res) => {
   }
 
   return res.json(
-    await posts.find(searchObj).sort({ votes: -1 }).skip(start).limit(10)
+    await posts.find(searchObj).sort(sortObj).skip(start).limit(10)
   );
 };
 

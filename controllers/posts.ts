@@ -74,6 +74,14 @@ const getPosts: Handler = async (req, res) => {
 
   searchObj["deleted"] = false;
 
+  const sortObj: any = {};
+
+  if (query.sort === "time") {
+    sortObj["createdAt"] = -1;
+  } else {
+    sortObj["votes"] = -1;
+  }
+
   if (query.city) {
     searchObj["city"] = query.city;
   }

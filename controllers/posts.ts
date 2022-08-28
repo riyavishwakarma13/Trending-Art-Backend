@@ -1,7 +1,10 @@
 import path from "path";
 import crypto from "crypto";
 import { Handler } from "express";
-import posts, { postsValidationSchema } from "../modals/posts";
+import posts, {
+  numberValidationSchema,
+  postsValidationSchema,
+} from "../modals/posts";
 import { ValidationError } from "yup";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -87,4 +90,26 @@ const getPosts: Handler = async (req, res) => {
   );
 };
 
-export { addPost, getPosts };
+const getPostByNumber: Handler = async (req, res) => {
+  const { number } = req.params;
+
+  try {
+    await numberValidationSchema.validate(number);
+    const doc = await posts.findOne({
+      phone: number,
+      deleted: false,
+    });
+
+    return res.json(doc);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return res.status(401).json({ message: "Not a valid number" });
+    } else {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+  }
+
+  return res.json({ message: "Hello World" });
+};
+
+export { addPost, getPosts, getPostByNumber };

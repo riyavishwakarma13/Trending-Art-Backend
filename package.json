@@ -2,7 +2,7 @@
   "name": "gan-camp-backend",
   "version": "1.0.0",
   "description": "Backend for ganpati campaign ",
-  "main": "dist/api/index.js",
+  "main": "api/index.js",
   "author": "adnan007d",
   "license": "MIT",
   "scripts": {

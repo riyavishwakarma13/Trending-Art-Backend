@@ -2,12 +2,13 @@
   "name": "gan-camp-backend",
   "version": "1.0.0",
   "description": "Backend for ganpati campaign ",
-  "main": "index.js",
+  "main": "dist/api/index.js",
   "author": "adnan007d",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "dev": "nodemon api/index.ts",
+    "build": "tsc",
+    "start":"node dist/api/index.js"
   },
   "dependencies": {
     "axios": "^0.27.2",

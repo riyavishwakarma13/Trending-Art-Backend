@@ -18,14 +18,6 @@ const addVote: Handler = async (req, res) => {
       return res.status(400).json({ message: "Cannot vote to yourself" });
     }
 
-    const voteDoc = await votes.findOne({
-      postId: body.postId,
-      email: body.email,
-    });
-    if (voteDoc) {
-      return res.status(400).json({ message: "Already Voted" });
-    }
-
     await votes.create({
       postId: body.postId,
       email: body.email,

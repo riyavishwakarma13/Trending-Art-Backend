@@ -78,6 +78,7 @@ const getPosts: Handler = async (req, res) => {
 
   if (query.sort === "time") {
     sortObj["createdAt"] = -1;
+    // searchObj["verified"] = true;
   } else {
     sortObj["votes"] = -1;
   }
@@ -93,31 +94,42 @@ const getPosts: Handler = async (req, res) => {
     searchObj["displayName"] = new RegExp(query.name as string, "i");
   }
 
+  const docs = await posts.find(searchObj).sort(sortObj).skip(start).limit(10);
   return res.json(
-    await posts.find(searchObj).sort(sortObj).skip(start).limit(10)
+    docs.map((doc) => ({
+      name: doc.name,
+      city: doc.city,
+      category: doc.category,
+      displayName: doc.displayName,
+      imageLink: doc.imageLink,
+      votes: doc.votes,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    }))
   );
 };
 
-const getPostByNumber: Handler = async (req, res) => {
-  const { number } = req.params;
+const getPostById: Handler = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    await numberValidationSchema.validate(number);
     const doc = await posts.findOne({
-      phone: number,
+      _id: id,
       deleted: false,
     });
-
-    return res.json(doc);
+    return res.json({
+      name: doc.name,
+      city: doc.city,
+      category: doc.category,
+      displayName: doc.displayName,
+      imageLink: doc.imageLink,
+      votes: doc.votes,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return res.status(401).json({ message: "Not a valid number" });
-    } else {
-      return res.status(500).json({ message: "Something went wrong" });
-    }
+    return res.status(500).json({ message: "Post Not FOund" });
   }
-
-  return res.json({ message: "Hello World" });
 };
 
-export { addPost, getPosts, getPostByNumber };
+export { addPost, getPosts, getPostById };

@@ -33,7 +33,7 @@ const upload = multer({
 
 postRouter.post("/", upload.single("file"), addPost);
 postRouter.get("/", getPosts);
-postRouter.get("/:id", getPostById);
 postRouter.get("/count", getPostCount);
+postRouter.get("/:id", getPostById);
 
 export default postRouter;

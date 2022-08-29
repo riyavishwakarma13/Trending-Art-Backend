@@ -132,4 +132,20 @@ const getPostById: Handler = async (req, res) => {
   }
 };
 
-export { addPost, getPosts, getPostById };
+const getPostCount: Handler = async (req, res) => {
+  const { city } = req.query;
+
+  const searchObj: any = {};
+
+  if (city) {
+    searchObj["city"] = city;
+  }
+  try {
+    const count = await posts.countDocuments(searchObj);
+    return res.status(200).json({ message: "Counts", data: count });
+  } catch (error) {
+    return res.status(500).json({ message: "Error Fetching posts count" });
+  }
+};
+
+export { addPost, getPosts, getPostById, getPostCount };

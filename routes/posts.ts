@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { addPost, getPostById, getPosts } from "../controllers/posts";
+import {
+  addPost,
+  getPostById,
+  getPostCount,
+  getPosts,
+} from "../controllers/posts";
 import path from "path";
 import multer from "multer";
 const postRouter = Router();
@@ -29,5 +34,6 @@ const upload = multer({
 postRouter.post("/", upload.single("file"), addPost);
 postRouter.get("/", getPosts);
 postRouter.get("/:id", getPostById);
+postRouter.get("/count", getPostCount);
 
 export default postRouter;

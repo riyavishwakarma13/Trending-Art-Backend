@@ -87,6 +87,10 @@ const PostSchema = new Schema(
       type: Number,
       default: 0,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     deleted: {
       type: Boolean,
       default: false,

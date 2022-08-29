@@ -90,7 +90,7 @@ const getPosts: Handler = async (req, res) => {
     searchObj["Category"] = query.cat;
   }
   if (query.name) {
-    searchObj["name"] = new RegExp(query.name as string, "i");
+    searchObj["displayName"] = new RegExp(query.name as string, "i");
   }
 
   return res.json(

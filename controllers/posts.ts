@@ -97,6 +97,7 @@ const getPosts: Handler = async (req, res) => {
   const docs = await posts.find(searchObj).sort(sortObj).skip(start).limit(10);
   return res.json(
     docs.map((doc) => ({
+      id: doc._id,
       name: doc.name,
       city: doc.city,
       category: doc.category,
@@ -118,6 +119,7 @@ const getPostById: Handler = async (req, res) => {
       deleted: false,
     });
     return res.json({
+      id: doc._id,
       name: doc.name,
       city: doc.city,
       category: doc.category,

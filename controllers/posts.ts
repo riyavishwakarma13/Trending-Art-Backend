@@ -49,11 +49,24 @@ const addPost: Handler = async (req, res) => {
 
     const url = await uploadFileToFTP(file, body.phone);
 
-    await posts.create({
+    const doc = await posts.create({
       ...body,
       imageLink: url,
     });
-    return res.json({ message: `${url}` });
+    return res.json({
+      message: `Post added Successfully`,
+      data: {
+        id: doc._id,
+        name: doc.name,
+        city: doc.city,
+        category: doc.category,
+        displayName: doc.displayName,
+        imageLink: doc.imageLink,
+        votes: doc.votes,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      },
+    });
   } catch (error: any) {
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
@@ -150,4 +163,24 @@ const getPostCount: Handler = async (req, res) => {
   }
 };
 
-export { addPost, getPosts, getPostById, getPostCount };
+const getPostByIdByNumber: Handler = async (req, res) => {
+  const { number } = req.params;
+
+  try {
+    await numberValidationSchema.validate(number);
+    const doc = await posts.findOne({
+      phone: number,
+      deleted: false,
+    });
+
+    return res.json({ message: "Post Id", data: doc.id });
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return res.status(401).json({ message: "Not a valid number" });
+    } else {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+  }
+};
+
+export { addPost, getPosts, getPostById, getPostCount, getPostByIdByNumber };

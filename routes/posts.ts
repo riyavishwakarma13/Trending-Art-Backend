@@ -35,5 +35,6 @@ postRouter.post("/", upload.single("file"), addPost);
 postRouter.get("/", getPosts);
 postRouter.get("/count", getPostCount);
 postRouter.get("/:id", getPostById);
+postRouter.get("/number/:number");
 
 export default postRouter;

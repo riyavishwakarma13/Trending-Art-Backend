@@ -22,6 +22,7 @@ const cities = [
   "AURANGABAD",
   "GOA",
   "NANDED",
+  "OTHERS",
 ];
 
 const categories = ["HOUSEHOLD", "SOCIETY", "MANDAL"];

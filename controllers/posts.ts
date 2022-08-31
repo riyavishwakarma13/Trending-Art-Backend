@@ -91,7 +91,7 @@ const getPosts: Handler = async (req, res) => {
 
   if (query.sort === "time") {
     sortObj["createdAt"] = -1;
-    // searchObj["verified"] = true;
+    searchObj["verified"] = true;
   } else {
     sortObj["votes"] = -1;
   }

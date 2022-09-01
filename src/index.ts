@@ -25,7 +25,7 @@ app.post("/api/send-otp", sendOtp);
 app.use("/api/votes", votesRouter);
 
 app.get("/", (req, res) => {
-  res.send("WooW MeoW");
+  return res.send("WooW MeoW");
 });
 
 mongoose

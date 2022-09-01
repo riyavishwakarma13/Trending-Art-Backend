@@ -52,7 +52,7 @@ const addPost: Handler = async (req, res) => {
 
     const url = await uploadFileToFTP(file, body.phone);
 
-    if (url.length === 0) {
+    if (url?.length === 0) {
       return res.json({message: "Could not upload the post! Try again later"});
     }
 
@@ -151,10 +151,7 @@ const getPostById: Handler = async (req, res) => {
       deleted: false,
     });
 
-    if (!doc) {
-      return res.json(400).json({message: "Post Not Found"});
-    }
-
+    
     return res.json({
       id: doc._id,
       name: doc.name,

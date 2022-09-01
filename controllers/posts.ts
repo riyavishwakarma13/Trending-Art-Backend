@@ -47,6 +47,11 @@ const addPost: Handler = async (req, res) => {
   // @ts-ignore
   const file: Express.Multer.File = req.file;
 
+  if (!file) {
+    return res.status(400),json({message: "File is required"});
+  }
+
+
   try {
     await postsValidationSchema.validate(body, { abortEarly: false });
 
@@ -151,7 +156,7 @@ const getPostById: Handler = async (req, res) => {
       deleted: false,
     });
 
-    
+
     return res.json({
       id: doc._id,
       name: doc.name,

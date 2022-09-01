@@ -52,7 +52,7 @@ const addPost: Handler = async (req, res) => {
 
     const url = await uploadFileToFTP(file, body.phone);
 
-    if (!url) {
+    if (url.length === 0) {
       return res.json({message: "Could not upload the post! Try again later"});
     }
 

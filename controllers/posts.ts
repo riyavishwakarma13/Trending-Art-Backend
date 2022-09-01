@@ -34,7 +34,10 @@ const uploadFileToFTP = async (
         },
       }
     );
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
 
   return `https://www.optiminastic.com/uploads/images/${filename}`;
 };
@@ -48,6 +51,10 @@ const addPost: Handler = async (req, res) => {
     await postsValidationSchema.validate(body, { abortEarly: false });
 
     const url = await uploadFileToFTP(file, body.phone);
+
+    if (!url) {
+      return res.json({message: "Could not upload the post! Try again later"});
+    }
 
     const doc = await posts.create({
       ...body,
@@ -68,6 +75,7 @@ const addPost: Handler = async (req, res) => {
       },
     });
   } catch (error: any) {
+    console.error(error);
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
     } else if (error?.message.includes("duplicate")) {
@@ -79,50 +87,57 @@ const addPost: Handler = async (req, res) => {
 };
 
 const getPosts: Handler = async (req, res) => {
-  const query = req.query;
-  // res.json(query);
+  try {
+    const query = req.query;
+    // res.json(query);
 
-  const start: number = parseInt(query.start as string) || 0;
-  const searchObj: any = {};
+    const start: number = parseInt(query.start as string) || 0;
+    const searchObj: any = {};
 
-  searchObj["deleted"] = false;
+    searchObj["deleted"] = false;
 
-  const sortObj: any = {};
+    const sortObj: any = {};
 
-  if (query.sort === "time") {
-    sortObj["createdAt"] = -1;
-    searchObj["verified"] = true;
-  } else {
-    sortObj["votes"] = -1;
+    if (query.sort === "time") {
+      sortObj["createdAt"] = -1;
+      searchObj["verified"] = true;
+    } else {
+      sortObj["votes"] = -1;
+    }
+
+    if (query.city) {
+      searchObj["city"] = query.city;
+    }
+
+    if (query.category) {
+      searchObj["category"] = query.category;
+    }
+    if (query.name) {
+      searchObj["displayName"] = new RegExp(query.name as string, "i");
+    }
+    const docs = await posts
+      .find(searchObj)
+      .sort(sortObj)
+      .skip(start)
+      .limit(10);
+    return res.json(
+      docs.map((doc) => ({
+        id: doc._id,
+        name: doc.name,
+        city: doc.city,
+        category: doc.category,
+        displayName: doc.displayName,
+        imageLink: doc.imageLink,
+        votes: doc.votes,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      }))
+    );
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "something went wrong" });
   }
-
-  if (query.city) {
-    searchObj["city"] = query.city;
-  }
-
-  if (query.category) {
-    searchObj["category"] = query.category;
-  }
-  if (query.name) {
-    searchObj["displayName"] = new RegExp(query.name as string, "i");
-  }
-
-  const docs = await posts.find(searchObj).sort(sortObj).skip(start).limit(10);
-  return res.json(
-    docs.map((doc) => ({
-      id: doc._id,
-      name: doc.name,
-      city: doc.city,
-      category: doc.category,
-      displayName: doc.displayName,
-      imageLink: doc.imageLink,
-      votes: doc.votes,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    }))
-  );
 };
-
 const getPostById: Handler = async (req, res) => {
   const { id } = req.params;
 
@@ -143,6 +158,7 @@ const getPostById: Handler = async (req, res) => {
       updatedAt: doc.updatedAt,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Post Not FOund" });
   }
 };
@@ -159,6 +175,7 @@ const getPostCount: Handler = async (req, res) => {
     const count = await posts.countDocuments(searchObj);
     return res.status(200).json({ message: "Counts", data: count });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Error Fetching posts count" });
   }
 };
@@ -175,6 +192,7 @@ const getPostByIdByNumber: Handler = async (req, res) => {
 
     return res.json({ message: "Post Id", data: doc.id });
   } catch (error) {
+    console.error(error);
     if (error instanceof ValidationError) {
       return res.status(401).json({ message: "Not a valid number" });
     } else {

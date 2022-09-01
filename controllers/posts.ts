@@ -141,6 +141,10 @@ const getPosts: Handler = async (req, res) => {
 const getPostById: Handler = async (req, res) => {
   const { id } = req.params;
 
+  if (!id) {
+    return res.json({message: "Post Not Found"});
+  }
+
   try {
     const doc = await posts.findOne({
       _id: id,

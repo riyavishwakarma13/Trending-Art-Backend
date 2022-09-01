@@ -150,6 +150,11 @@ const getPostById: Handler = async (req, res) => {
       _id: id,
       deleted: false,
     });
+
+    if (!doc) {
+      return res.json(400).json({message: "Post Not Found"});
+    }
+
     return res.json({
       id: doc._id,
       name: doc.name,

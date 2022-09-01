@@ -25,7 +25,7 @@ const uploadFileToFTP = async (
   const fileD = `name=${filename}&file=${base64Image}`;
 
   try {
-    const res = axios.post(
+    const res = await axios.post(
       "https://www.optiminastic.com/uploads/upload.php",
       fileD,
       {

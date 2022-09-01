@@ -48,7 +48,7 @@ const addPost: Handler = async (req, res) => {
   const file: Express.Multer.File = req.file;
 
   if (!file) {
-    return res.status(400),json({message: "File is required"});
+    return res.status(400).json({message: "File is required"});
   }
 
 

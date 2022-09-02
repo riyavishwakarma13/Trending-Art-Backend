@@ -8,7 +8,8 @@ import posts, {
 import { ValidationError } from "yup";
 import axios from "axios";
 import dotenv from "dotenv";
-
+import AWS from "aws-sdk";
+import { PutObjectRequest } from "aws-sdk/clients/mediastoredata";
 dotenv.config();
 
 const uploadFileToFTP = async (
@@ -50,15 +51,42 @@ const addPost: Handler = async (req, res) => {
   // @ts-ignore
   const file: Express.Multer.File = req.file;
 
+
   if (!file) {
     return res.status(400).json({message: "File is required"});
   }
+
+  
 
 
   try {
     await postsValidationSchema.validate(body, { abortEarly: false });
 
-    const url = await uploadFileToFTP(file, body.phone);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const name =
+      crypto.createHash("md5").update(body.phone).digest().toString("hex") +
+      Date.now();
+  
+    const filename = `${name}${ext}`;
+
+    // AWS START
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.Access_Key_ID,
+      secretAccessKey:process.env.Secret_Access_Key,
+    });
+
+    const params  =  {
+      Bucket: process.env.BUCKET_NAME!,
+      Key: filename,
+      Body: req.file?.buffer, 
+    }
+
+    const Data = await s3.upload(params).promise();
+
+    const url = Data.Location;
+    console.log(url)
+// AWS END
+    // const url = await uploadFileToFTP(file, body.phone);
 
     if (url?.length === 0) {
       return res.json({message: "Could not upload the post! Try again later"});

@@ -17,13 +17,13 @@ const addVote: Handler = async (req, res) => {
     if (post.phone === body.phone) {
       return res.status(400).json({ message: "Cannot vote to yourself" });
     }
-  console.log(body.postId);
+
     const alreadyVoted = await votes.findOne({
       postId: body.postId,
-      email: body.email,
     });
 
-    if (alreadyVoted) {
+    if (alreadyVoted.email === body.email || alreadyVoted.phone === body.phone) {
+      console.log("Caught you");
       return res.status(404).json({ message: "Already Voted" });
     }
 

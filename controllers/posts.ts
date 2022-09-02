@@ -34,6 +34,7 @@ const uploadFileToFTP = async (
         },
       }
     );
+    console.log(res.data)
   } catch (error) {
     console.error(error);
     return "";

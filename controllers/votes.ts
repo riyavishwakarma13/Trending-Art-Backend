@@ -23,7 +23,7 @@ const addVote: Handler = async (req, res) => {
     });
 
     if (alreadyVoted.email === body.email || alreadyVoted.phone === body.phone) {
-      console.log("Caught you");
+      console.log("Caught you", req.body);
       return res.status(404).json({ message: "Already Voted" });
     }
 

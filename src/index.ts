@@ -19,10 +19,10 @@ const MONGODB_URI = process.env.MONGODB_URI!;
 console.log(MONGODB_URI);
 
 const limiter = RateLimit({
-  windowMs: 1000 * 10,
-  max: 2,
+  windowMs: 1000 * 60 ,
+  max: 5,
   message: {
-    message: "Too Many Requests, Try Again Later"
+    message: "You Are Sending Too Many Requests, Try Again Later"
   }
 })
 

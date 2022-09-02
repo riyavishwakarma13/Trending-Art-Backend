@@ -17,7 +17,7 @@ const addVote: Handler = async (req, res) => {
     if (post.phone === body.phone) {
       return res.status(400).json({ message: "Cannot vote to yourself" });
     }
-
+  console.log(body.postId);
     const alreadyVoted = await votes.findOne({
       postId: body.postId,
       email: body.email,

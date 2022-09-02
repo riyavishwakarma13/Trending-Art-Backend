@@ -34,7 +34,10 @@ const uploadFileToFTP = async (
         },
       }
     );
-    console.log(res.data);
+
+    await axios.head(
+      `https://www.optiminastic.com/uploads/images/${filename}`
+    );
   } catch (error) {
     console.error(error);
     return "";

@@ -34,9 +34,9 @@ const uploadFileToFTP = async (
         },
       }
     );
-    if (!res.data.startsWith("WooW")) {
-      return "";
-    }
+    // if (!res.data.startsWith("WooW")) {
+    //   return "";
+    // }
   } catch (error) {
     console.error(error);
     return "";

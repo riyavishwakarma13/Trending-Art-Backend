@@ -29,6 +29,7 @@ const limiter = RateLimit({
 const blockList: any = { "126.1.39.254": true, "154.3.129.22": true };
 
 const blockIp: Handler = (req, res, next) => {
+  console.log(req.ip, blockList[req.ip]);
   if (blockList[req.ip]) {
     console.log("Blocked!", req.body);
     return res.status(401).json({ message: "Nice!" });

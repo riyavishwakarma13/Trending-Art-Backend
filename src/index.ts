@@ -38,7 +38,7 @@ const blockIp: Handler = (req, res, next) => {
   const ip = list[list.length-1];
 
   if (blockList[ip]) {
-    console.log("Blocked!", req.body);
+    console.log("Blocked!", ip, req.body);
     return res.status(401).json({ message: "Nice!" });
   }
   next();

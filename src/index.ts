@@ -29,8 +29,17 @@ const limiter = RateLimit({
 const blockList: any = { "126.1.39.254": true, "154.3.129.22": true };
 
 const blockIp: Handler = (req, res, next) => {
-  console.log(req.ip, blockList[req.ip]);
-  if (blockList[req.ip]) {
+
+  const ipAddrs = req.headers["x-forwarded-for"] as string;
+  if (!ipAddrs) {
+    return res.status(401).json({ message: "Nice!" });
+  } 
+  console.log(ipAddrs);
+  const list = ipAddrs.split(",");
+  const ip = list[list.length-1];
+
+  console.log(ip, blockList[ip]);
+  if (blockList[ip]) {
     console.log("Blocked!", req.body);
     return res.status(401).json({ message: "Nice!" });
   }

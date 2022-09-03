@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Handler } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -19,19 +19,29 @@ const MONGODB_URI = process.env.MONGODB_URI!;
 console.log(MONGODB_URI);
 
 const limiter = RateLimit({
-  windowMs: 1000 * 60 ,
-  max: 5,
+  windowMs: 1000 * 60,
+  max: 3,
   message: {
-    message: "You Are Sending Too Many Requests, Try Again Later"
+    message: "You Are Sending Too Many Requests, Try Again Later",
+  },
+});
+
+const blockList: any = { "126.1.39.254": true };
+
+const blockIp: Handler = (req, res, next) => {
+  if (blockList[req.ip]) {
+    console.log("Blocked!", req.body);
+    return res.status(401).json({ message: "Nice!" });
   }
-})
+  next();
+};
 
 app.use(express.json());
 app.use(cors());
 app.use("/api/posts", postRouter);
 app.post("/api/verify-otp", verifyOtp);
 app.post("/api/send-otp", sendOtp);
-app.use("/api/votes", limiter, votesRouter);
+app.use("/api/votes", blockIp, limiter, votesRouter);
 
 app.get("/", (req, res) => {
   return res.send("WooW MeoW");

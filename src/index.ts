@@ -26,7 +26,7 @@ const limiter = RateLimit({
   },
 });
 
-const blockList: any = { "126.1.39.254": true };
+const blockList: any = { "126.1.39.254": true, "154.3.129.22": true };
 
 const blockIp: Handler = (req, res, next) => {
   if (blockList[req.ip]) {

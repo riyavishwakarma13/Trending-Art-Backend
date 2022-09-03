@@ -50,7 +50,7 @@ export const postsValidationSchema = yup.object({
 export const numberValidationSchema = yup
   .string()
   .trim()
-  .matches(/^[6-9]{1}[0-9]{9}$/);
+  .matches(/^[6-9]{1}[0-9]{9}$/, "Invalid Phone Number");
 
 type IPost = yup.InferType<typeof postsValidationSchema>;
 

@@ -84,7 +84,6 @@ const addPost: Handler = async (req, res) => {
     const Data = await s3.upload(params).promise();
 
     const url = Data.Location;
-    console.log(url)
 // AWS END
     // const url = await uploadFileToFTP(file, body.phone);
 

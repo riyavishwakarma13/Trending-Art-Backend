@@ -20,9 +20,10 @@ const addVote: Handler = async (req, res) => {
 
     const alreadyVoted = await votes.findOne({
       postId: body.postId,
+      email: body.email,
     });
 
-    if (alreadyVoted.email === body?.email || alreadyVoted.phone === body?.phone) {
+    if (alreadyVoted) {
       console.log("Caught you", req.body);
       return res.status(404).json({ message: "Already Voted" });
     }
@@ -39,7 +40,7 @@ const addVote: Handler = async (req, res) => {
     });
     return res.json({ message: "Vote Added Successfully" });
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
     if (error instanceof ValidationError) {
       return res.status(400).json({ message: error.errors[0] });
     } else if (error?.message.includes("duplicate")) {

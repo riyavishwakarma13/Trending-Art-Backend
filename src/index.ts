@@ -20,7 +20,7 @@ console.log(MONGODB_URI);
 
 const limiter = RateLimit({
   windowMs: 1000 * 60,
-  max: 3,
+  max: 4,
   message: {
     message: "You Are Sending Too Many Requests, Try Again Later",
   },
@@ -30,17 +30,17 @@ const blockList: any = { "126.1.39.254": true, "154.3.129.22": true, "103.122.23
 
 const blockIp: Handler = (req, res, next) => {
 
-  // const ipAddrs = req.headers["x-forwarded-for"] as string;
-  // if (!ipAddrs) {
-  //   return res.status(401).json({ message: "Nice!" });
-  // } 
-  // const list = ipAddrs.split(",");
-  // const ip = list[list.length-1];
+  const ipAddrs = req.headers["x-forwarded-for"] as string;
+  if (!ipAddrs) {
+    return res.status(401).json({ message: "Nice!" });
+  } 
+  const list = ipAddrs.split(",");
+  const ip = list[list.length-1];
 
-  // if (blockList[ip]) {
-  //   // console.log("Blocked!", ip, req.body.postId);
-  //   return res.status(401).json({ message: "Nice!" });
-  // }
+  if (blockList[ip]) {
+    // console.log("Blocked!", ip, req.body.postId);
+    return res.status(401).json({ message: "Nice!" });
+  }
   next();
 };
 

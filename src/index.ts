@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 3000;
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
-console.log(MONGODB_URI);
 
 const limiter = RateLimit({
   windowMs: 1000 * 60,

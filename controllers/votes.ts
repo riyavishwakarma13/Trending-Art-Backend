@@ -17,7 +17,6 @@ const isHuman = async (token:string|undefined) => {
 const addVote: Handler = async (req, res) => {
   const body = req.body;
   const { id } = req.params;
-  console.log(req.body)
   try {
     await votesValidationSchema.validate(body, { abortEarly: false });
 

@@ -22,6 +22,7 @@ const addVote: Handler = async (req, res) => {
     const alreadyVoted = await votes.findOne({
       postId: id,
       email: body.email,
+      deleted: false,
     });
 
     if (alreadyVoted) {

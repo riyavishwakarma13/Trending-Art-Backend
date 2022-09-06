@@ -10,7 +10,7 @@ const addVote: Handler = async (req, res) => {
   const {id} = req.params;
   try {
     await votesValidationSchema.validate(body, { abortEarly: false });
-    const post = await posts.findById(id);
+    const post = await posts.findOne({_id: id, deleted: false});
     if (!post) {
       return res.status(400).json({ message: "post not found" });
     }
@@ -22,7 +22,6 @@ const addVote: Handler = async (req, res) => {
     const alreadyVoted = await votes.findOne({
       postId: id,
       email: body.email,
-      deleted: false,
     });
 
     if (alreadyVoted) {

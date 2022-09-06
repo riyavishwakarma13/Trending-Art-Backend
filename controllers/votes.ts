@@ -7,9 +7,10 @@ import votes, { votesValidationSchema } from "../modals/votes";
 dotenv.config();
 const addVote: Handler = async (req, res) => {
   const body = req.body;
+  const {id} = req.params;
   try {
     await votesValidationSchema.validate(body, { abortEarly: false });
-    const post = await posts.findById(body.postId);
+    const post = await posts.findById(id);
     if (!post) {
       return res.status(400).json({ message: "post not found" });
     }
@@ -19,7 +20,7 @@ const addVote: Handler = async (req, res) => {
     }
 
     const alreadyVoted = await votes.findOne({
-      postId: body.postId,
+      postId: id,
       email: body.email,
     });
 
@@ -29,11 +30,11 @@ const addVote: Handler = async (req, res) => {
     }
 
     await votes.create({
-      postId: body.postId,
+      postId: id,
       email: body.email,
       phone: body.phone,
     });
-    await posts.findByIdAndUpdate(body.postId, {
+    await posts.findByIdAndUpdate(id, {
       $inc: {
         votes: 1,
       },

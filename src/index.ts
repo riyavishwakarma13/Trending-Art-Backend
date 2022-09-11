@@ -7,6 +7,7 @@ import votesRouter from "../routes/votes";
 import { verifyOtp } from "../controllers/verify-otp";
 import { sendOtp } from "../controllers/send-otp";
 import RateLimit from "express-rate-limit";
+import { over } from "../middleware/over";
 
 dotenv.config();
 
@@ -16,7 +17,6 @@ const PORT = process.env.PORT || 3000;
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
-
 const limiter = RateLimit({
   windowMs: 1000 * 60,
   max: 4,
@@ -25,16 +25,22 @@ const limiter = RateLimit({
   },
 });
 
-const blockList: any = { "126.1.39.254": true, "154.3.129.22": true, "103.122.232.21": true, "103.122.232.37": true, "223.177.230.230": true, "206.84.239.231": true };
+const blockList: any = {
+  "126.1.39.254": true,
+  "154.3.129.22": true,
+  "103.122.232.21": true,
+  "103.122.232.37": true,
+  "223.177.230.230": true,
+  "206.84.239.231": true,
+};
 
 const blockIp: Handler = (req, res, next) => {
-
   const ipAddrs = req.headers["x-forwarded-for"] as string;
   if (!ipAddrs) {
     return res.status(401).json({ message: "Nice!" });
-  } 
+  }
   const list = ipAddrs.split(",");
-  const ip = list[list.length-1];
+  const ip = list[list.length - 1];
 
   if (blockList[ip]) {
     // console.log("Blocked!", ip, req.body.postId);
@@ -46,9 +52,9 @@ const blockIp: Handler = (req, res, next) => {
 app.use(express.json());
 app.use(cors());
 app.use("/api/posts", postRouter);
-app.post("/api/verify-otp", verifyOtp);
-app.post("/api/send-otp", sendOtp);
-app.use("/api/votes", blockIp, limiter, votesRouter);
+app.post("/api/verify-otp", over, verifyOtp);
+app.post("/api/send-otp", over, sendOtp);
+app.use("/api/votes", over, blockIp, limiter, votesRouter);
 
 app.get("/", (req, res) => {
   return res.send("WooW MeoW");

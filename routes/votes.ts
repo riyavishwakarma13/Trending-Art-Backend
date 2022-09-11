@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { addVote } from "../controllers/votes";
-import {over} from "../middleware/over";
 const votesRouter = Router();
 
-votesRouter.post("/:id", over, addVote);
+votesRouter.post("/:id", addVote);
 
 export default votesRouter;

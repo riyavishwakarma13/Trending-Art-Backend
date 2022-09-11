@@ -7,6 +7,8 @@ import {
 } from "../controllers/posts";
 import path from "path";
 import multer from "multer";
+import { over } from "../middleware/over";
+
 const postRouter = Router();
 
 const upload = multer({
@@ -31,7 +33,7 @@ const upload = multer({
   },
 });
 
-postRouter.post("/", upload.single("file"), addPost);
+postRouter.post("/", over, upload.single("file"), addPost);
 postRouter.get("/", getPosts);
 postRouter.get("/count", getPostCount);
 postRouter.get("/:id", getPostById);

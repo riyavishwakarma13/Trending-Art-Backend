@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import postRouter from "../routes/posts";
 import votesRouter from "../routes/votes";
-import { verifyOtp } from "../controllers/verify-otp";
-import { sendOtp } from "../controllers/send-otp";
 import RateLimit from "express-rate-limit";
 import { over } from "../middleware/over";
 
@@ -25,36 +23,34 @@ const limiter = RateLimit({
   },
 });
 
-const blockList: any = {
-  "126.1.39.254": true,
-  "154.3.129.22": true,
-  "103.122.232.21": true,
-  "103.122.232.37": true,
-  "223.177.230.230": true,
-  "206.84.239.231": true,
-};
+// const blockList: any = {
+//   "126.1.39.254": true,
+//   "154.3.129.22": true,
+//   "103.122.232.21": true,
+//   "103.122.232.37": true,
+//   "223.177.230.230": true,
+//   "206.84.239.231": true,
+// };
 
-const blockIp: Handler = (req, res, next) => {
-  const ipAddrs = req.headers["x-forwarded-for"] as string;
-  if (!ipAddrs) {
-    return res.status(401).json({ message: "Nice!" });
-  }
-  const list = ipAddrs.split(",");
-  const ip = list[list.length - 1];
+// const blockIp: Handler = (req, res, next) => {
+//   const ipAddrs = req.headers["x-forwarded-for"] as string;
+//   if (!ipAddrs) {
+//     return res.status(401).json({ message: "Nice!" });
+//   }
+//   const list = ipAddrs.split(",");
+//   const ip = list[list.length - 1];
 
-  if (blockList[ip]) {
-    // console.log("Blocked!", ip, req.body.postId);
-    return res.status(401).json({ message: "Nice!" });
-  }
-  next();
-};
+//   if (blockList[ip]) {
+//     // console.log("Blocked!", ip, req.body.postId);
+//     return res.status(401).json({ message: "Nice!" });
+//   }
+//   next();
+// };
 
 app.use(express.json());
 app.use(cors());
 app.use("/api/posts", postRouter);
-app.post("/api/verify-otp", over, verifyOtp);
-app.post("/api/send-otp", over, sendOtp);
-app.use("/api/votes", over, blockIp, limiter, votesRouter);
+app.use("/api/votes", limiter, votesRouter);
 
 app.get("/", (req, res) => {
   return res.send("WooW MeoW");

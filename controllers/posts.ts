@@ -8,8 +8,7 @@ import posts, {
 import { ValidationError } from "yup";
 import axios from "axios";
 import dotenv from "dotenv";
-import AWS from "aws-sdk";
-import { PutObjectRequest } from "aws-sdk/clients/mediastoredata";
+import { postBucket } from "../firebase-admin";
 dotenv.config();
 
 const uploadFileToFTP = async (
@@ -51,44 +50,37 @@ const addPost: Handler = async (req, res) => {
   // @ts-ignore
   const file: Express.Multer.File = req.file;
 
-
   if (!file) {
-    return res.status(400).json({message: "File is required"});
+    return res.status(400).json({ message: "File is required" });
   }
-
-  
-
 
   try {
     await postsValidationSchema.validate(body, { abortEarly: false });
 
     const ext = path.extname(file.originalname).toLowerCase();
     const name =
-      crypto.createHash("md5").update(body.phone).digest().toString("hex") +
+      crypto.createHash("md5").update(body.contact).digest().toString("hex") +
       Date.now();
-  
-    const filename = `${name}${ext}`;
 
-    // AWS START
-    const s3 = new AWS.S3({
-      accessKeyId: process.env.Access_Key_ID,
-      secretAccessKey:process.env.Secret_Access_Key,
-    });
+    const fileName = `${name}${ext}`;
 
-    const params  =  {
-      Bucket: process.env.BUCKET_NAME!,
-      Key: filename,
-      Body: req.file?.buffer, 
-    }
+    const uploadFile = async (name: string, file: Express.Multer.File) => {
+      // const fileName = createFileName(name, file.originalname);
+      const filePath = `posts/${name}`;
+      const fileObj = postBucket.file(filePath);
 
-    const Data = await s3.upload(params).promise();
+      const postLink = await fileObj.save(file.buffer, {
+        public: true,
+      });
 
-    const url = Data.Location;
-// AWS END
-    // const url = await uploadFileToFTP(file, body.phone);
+      return fileObj.publicUrl();
+    };
+    const url = await uploadFile(fileName, file);
 
     if (url?.length === 0) {
-      return res.json({message: "Could not upload the post! Try again later"});
+      return res.json({
+        message: "Could not upload the post! Try again later",
+      });
     }
 
     const doc = await posts.create({
@@ -100,8 +92,7 @@ const addPost: Handler = async (req, res) => {
       data: {
         id: doc._id,
         name: doc.name,
-        city: doc.city,
-        category: doc.category,
+        country: doc.country,
         displayName: doc.displayName,
         imageLink: doc.imageLink,
         votes: doc.votes,
@@ -135,21 +126,18 @@ const getPosts: Handler = async (req, res) => {
 
     if (query.sort === "time") {
       sortObj["createdAt"] = -1;
-      searchObj["verified"] = true;
     } else {
       sortObj["votes"] = -1;
     }
 
-    if (query.city) {
-      searchObj["city"] = query.city;
+    if (query.country) {
+      searchObj["country"] = query.country;
     }
 
-    if (query.category) {
-      searchObj["category"] = query.category;
-    }
     if (query.name) {
       searchObj["displayName"] = new RegExp(query.name as string, "i");
     }
+
     const docs = await posts
       .find(searchObj)
       .sort(sortObj)
@@ -159,8 +147,7 @@ const getPosts: Handler = async (req, res) => {
       docs.map((doc) => ({
         id: doc._id,
         name: doc.name,
-        city: doc.city,
-        category: doc.category,
+        country: doc.country,
         displayName: doc.displayName,
         imageLink: doc.imageLink,
         votes: doc.votes,
@@ -177,7 +164,7 @@ const getPostById: Handler = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    return res.json({message: "Post Not Found"});
+    return res.json({ message: "Post Not Found" });
   }
 
   try {
@@ -186,12 +173,10 @@ const getPostById: Handler = async (req, res) => {
       deleted: false,
     });
 
-
     return res.json({
       id: doc._id,
       name: doc.name,
-      city: doc.city,
-      category: doc.category,
+      country: doc.country,
       displayName: doc.displayName,
       imageLink: doc.imageLink,
       votes: doc.votes,
@@ -227,7 +212,7 @@ const getPostByIdByNumber: Handler = async (req, res) => {
   try {
     await numberValidationSchema.validate(number);
     const doc = await posts.findOne({
-      phone: number,
+      contact: number,
       deleted: false,
     });
 

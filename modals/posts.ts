@@ -1,47 +1,46 @@
 import { Schema, models, model } from "mongoose";
 import * as yup from "yup";
 
-const cities = [
-  "THANE",
-  "NAVI MUMBAI",
-  "MUMBAI",
-  "PUNE",
-  "AMRAVATI",
-  "NAGPUR",
-  "AKOLA",
-  "JALGAON",
-  "KOLHAPUR",
-  "CHANDRAPUR",
-  "WASHIM",
-  "SANGLI",
-  "HINGOLI",
-  "GHADCHIROLI",
-  "AMRAVATI",
-  "LATUR",
-  "PALGHAR",
-  "AURANGABAD",
-  "GOA",
-  "NANDED",
+const countries = [
+  "INDIA",
+  "SWITZERLAND",
+  "GERMANY",
+  "CANADA",
+  "UNITED STATES",
+  "SWEDEN",
+  "JAPAN",
+  "AUSTRALIA",
+  "UNITED KINGDOM",
+  "FRANCE",
+  "DENMARK",
+  "NEW ZEALAND",
+  "NORWAY",
+  "ITALY",
+  "FINLAND",
+  "SPAIN",
+  "CHINA",
+  "BELGIUM",
+  "SINGAPORE",
+  "SOUTH KOREA",
+  "UNITED ARAB EMIRATES",
+  "AUSTRIA",
+  "IRELAND",
+  "GREECE",
   "OTHERS",
 ];
-
-const categories = ["HOUSEHOLD", "SOCIETY", "MANDAL"];
 
 export const postsValidationSchema = yup.object({
   name: yup.string().required(),
   email: yup.string().email(),
-  phone: yup.string().required(),
-  city: yup
+  contact: yup
     .string()
     .required()
-    .test("city", "Invalid City", (city) =>
-      cities.includes(city?.toUpperCase()!)
-    ),
-  category: yup
+    .matches(/^[6-9]{1}[0-9]{9}$/, "Invalid Phone Number"),
+  country: yup
     .string()
     .required()
-    .test("category", "Invalid Categroy", (category) =>
-      categories.includes(category?.toUpperCase()!)
+    .test("country", "Invalid Country", (country) =>
+      countries.includes(country?.toUpperCase()!)
     ),
   displayName: yup.string().required(),
   imageLink: yup.string(),
@@ -63,16 +62,12 @@ const PostSchema = new Schema(
     email: {
       type: String,
     },
-    phone: {
+    contact: {
       type: String,
       unique: true,
       required: true,
     },
-    city: {
-      type: String,
-      required: true,
-    },
-    category: {
+    country: {
       type: String,
       required: true,
     },

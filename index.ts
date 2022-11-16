@@ -2,10 +2,10 @@ import express, { Handler } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import postRouter from "../routes/posts";
-import votesRouter from "../routes/votes";
+import postRouter from "./src/routes/posts";
+import votesRouter from "./src/routes/votes";
 import RateLimit from "express-rate-limit";
-import { over } from "../middleware/over";
+import { over } from "./src/middleware/over";
 
 dotenv.config();
 

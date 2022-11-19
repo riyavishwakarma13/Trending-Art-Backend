@@ -95,6 +95,7 @@ const addPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "Could not upload the post! Try again later",
             });
         }
+        console.log(body);
         const doc = yield posts_1.default.create(Object.assign(Object.assign({}, body), { imageLink: url }));
         return res.json({
             message: `Post added Successfully`,

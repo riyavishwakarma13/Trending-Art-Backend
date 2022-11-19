@@ -83,10 +83,15 @@ const addPost: Handler = async (req, res) => {
       });
     }
 
+    console.log(body)
+
     const doc = await posts.create({
       ...body,
       imageLink: url,
     });
+
+
+
     return res.json({
       message: `Post added Successfully`,
       data: {
